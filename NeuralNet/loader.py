@@ -1,6 +1,7 @@
 import gzip
 import numpy as np
 import pickle
+import os
 
 def preload():
     """
@@ -8,6 +9,7 @@ def preload():
     Validation and Test contain 10,000 images each.
     Training contains 50,000 images. The data is represented as tuples.
     """
+    os.chdir('..')
     f = gzip.open("data/mnist.pkl.gz", 'rb')
     train, vald, test = pickle.load(f, encoding = 'latin1')
     f.close()
@@ -34,7 +36,15 @@ def load():
 
 
 def transform(index):
+    """
+    Transform the output of the dataset into a 10 dimension vector.
+    """
     v = np.zeros((10,1))
     v[index] = 1
     return v
+
+
+t, v, tt = load()
+
+print(t[0][0])
 
