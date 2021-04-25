@@ -7,15 +7,20 @@ class CrossEntropyCost():
     Representation of Cross-Entropy Cost Function.
     Prevents slow learning.
     """
-
-    def fuct(a, y):
+    
+    @staticmethod
+    def fuct(z, a, y):
         """
         The function measures how well an output activation a, matches the desired output y.
         """
         # np.nan_to_sum assures the function functions correctly near 0
         return np.sum(np.nan_to_num(- y * np.log(a) - (1 - y) * np.log(1 - a)))
-
+    
+    @staticmethod
     def delta(z, a, y):
+        """
+        The output layer error delta.
+        """
         return a - y
 
 class QuadraticCost():
@@ -23,14 +28,19 @@ class QuadraticCost():
     Representation of the classic Quadratic Cost Function.
     It learns really slowly when the activation is close to 0 or 1.
     """
-
+    
+    @staticmethod
     def fuct(a, y):
         """
         The function measures how well an output activation a, matches the desired output y.
         """
         return 0.5 * np.linalg.norm(a - y)**2
-
+    
+    @staticmethod
     def delta(z, a, y):
+        """
+        The output layer error delta.
+        """
         return (a - y) * sigmoid_prime(z)
 
 class NeuralNOptim():
@@ -111,7 +121,11 @@ class NeuralNOptim():
         return eval_cost, eval_acc, train_cost, train_acc
 
     def update(self, mini_batch, eta, lmbda, n):
-
+        """
+        Update the network's weights and biases by applying gradient
+        descent using backpropagation to a single mini batch.
+        eta is the learning rate, lmbda is the regularization parameter
+        """
         nabla_b = [np.zeros(y.shape) for y in self.biases]
         nabla_w = [np.zeros(w.shape) for w in self.weights]
 
@@ -131,6 +145,9 @@ class NeuralNOptim():
 
             
     def backprop(self, x, y):
+        """
+        Returns a tuple representing the gradient for the cost function.
+        """
         nabla_b = [np.zeros(b.shape) for b in self.biases]
         nabla_w = [np.zeros(w.shape) for w in self.weights]
         # forward propagation
@@ -182,13 +199,13 @@ class NeuralNOptim():
             a = self.forward(x)
             #if convert:
                 #y = transform(y)
-            cost += self.cost.fuct(a, y) / len(data)
+            cost += self.cost.fuct(1, a, y) / len(data)
         cost += 0.5 * (lmbda / len(data)) * sum(np.linalg.norm(w)**2 for w in self.weights)
         return cost
 
     def save(self, filename):
         """
-        Optional function to use th Neural Net.
+        Optional function to use the Neural Net.
         """            
         data = {"sizes": self.sizes,
                 "weights": [w.tolist() for w in self.weights],

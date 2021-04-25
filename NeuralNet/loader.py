@@ -44,7 +44,3 @@ def transform(index):
     return v
 
 
-t, v, tt = load()
-
-print(t[0][0])
-
