@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import time
 from loader import *
 
 
@@ -34,7 +35,9 @@ class NeuralN:
             ntest = len(list(test_data))
 
         ntrain = len(list(training_data))
+        total_train_time = time.time() # start the timer 
         for j in range(epochs):
+            epoch_time = time.time()
             random.shuffle(list(training_data)) # shuffle the training set
             mini_batches = [
                 training_data[k : k + mini_batch]
@@ -43,10 +46,15 @@ class NeuralN:
             for batch in mini_batches:
                 self.update(batch, eta) # updating the weights and biases in order to minimize the cost function
             if test_data:
-                print ("Epoch {0} : {1} / {2} Accuracy : {3}%".format(
-                j, self.evaluate(test_data), ntest, (self.evaluate(test_data) / ntest * 100.0)))
+                epoch_time_final = time.time()
+                print ("Epoch {0} : {1} / {2} Accuracy : {3}%. Time: {4}s".format(
+                j, self.evaluate(test_data), ntest, (self.evaluate(test_data) / ntest * 100.0),epoch_time_final - epoch_time))
             else:
                 print ("Epoch {0} completed".format(j))
+
+        total_train_time_final = time.time()
+
+        print("Time training : {0}s".format(total_train_time_final - total_train_time))
 
     def update(self, mini_batch, eta):
         nabla_b = [np.zeros(b.shape) for b in self.biases]
